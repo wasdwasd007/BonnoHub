@@ -10,8 +10,8 @@ _G.Settings = {
 
 
 }
-local LocalPlayer = game:GetService("Players").LocalPlayer
-local Character = LocalPlayer.Character
+local plr = game:GetService("Players").LocalPlayer
+local character = plr.Character
 
 for _, v in pairs(game:GetService("Workspace").Lives:GetChildren()) do
     local mobName = v.Name:match("^%D+")
@@ -20,7 +20,7 @@ for _, v in pairs(game:GetService("Workspace").Lives:GetChildren()) do
     end
 end
 
-for _,v in pairs(LocalPlayer.Backpack:GetChildren()) do
+for _,v in pairs(plr.Backpack:GetChildren()) do
     table.insert(_G.Settings.Weapons,v.Name)
 end
 
@@ -57,8 +57,8 @@ end)
 
 spawn(function()
     while wait() do
-        if _G.Settings.AutoEquip do
-            for _,v in pairs(LocalPlayer.Backpack:GetChildren()) do
+        if _G.Settings.AutoEquip == true then
+            for _,v in pairs(plr.Backpack:GetChildren()) do
                 if v.Name == _G.Settings.SelectedWeapon and v:IsA("Tool") then
                     v.Parent = Character
                 end
