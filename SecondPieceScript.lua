@@ -7,8 +7,6 @@ _G.Settings = {
     SelectedMob = "",
     Weapons = {},
     SelectedWeapon = "",
-
-
 }
 local plr = game:GetService("Players").LocalPlayer
 local character = plr.Character
@@ -57,10 +55,10 @@ end)
 
 spawn(function()
     while wait() do
-        if _G.Settings.AutoEquip == true then
-            for _,v in pairs(plr.Backpack:GetChildren()) do
-                if v.Name == _G.Settings.SelectedWeapon and v:IsA("Tool") then
-                    v.Parent = Character
+        if _G.Settings.AutoEquip then
+            for _, tool in pairs(plr.Backpack:GetChildren()) do
+                if tool.Name == _G.Settings.SelectedWeapon and tool:IsA("Tool") then
+                    tool.Parent = character
                 end
             end
         end
