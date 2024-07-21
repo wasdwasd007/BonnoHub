@@ -1,23 +1,28 @@
 repeat wait() until game:IsLoaded() and game.Players.LocalPlayer and game.Players.LocalPlayer.Character
 
-function MobsList()
-    for _, v in pairs(game:GetService("Workspace").Lives:GetChildren()) do
-        local mobName = v.Name:match("^%D+")
-        if mobName and not table.find(Settings.Mobs, mobName) then
-            table.insert(Settings.Mobs, mobName)
-        end
+_G.Settings = {
+    AutoFarm = false,
+    AutoEquip = false,
+    Mobs = {},
+    SelectedMob = "",
+    Weapons = {},
+    SelectedWeapon = "",
+
+
+}
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local Character = LocalPlayer.Character
+
+for _, v in pairs(game:GetService("Workspace").Lives:GetChildren()) do
+    local mobName = v.Name:match("^%D+")
+    if mobName and not table.find(_G.Settings.Mobs, mobName) then
+        table.insert(_G.Settings.Mobs, mobName)
     end
 end
 
-local Settings = {
-    AutoFarm = false,
-    Mobs = {},
-    SelectedMob = "",
-
-}
-
-
-MobsList()
+for _,v in pairs(LocalPlayer.Backpack:GetChildren()) do
+    table.insert(_G.Settings.Weapons,v.Name)
+end
 
 local Luxtl = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Luxware-UI-Library/main/Source.lua"))()
 local Luxt = Luxtl.CreateWindow("Bonno GUI", 6105620301)
@@ -40,26 +45,24 @@ local Main = mainTab:Section("Main")
 Main:DropDown("Select Mob", _G.Settings.Mobs, function(mobs)
     _G.Settings.SelectedMob = mobs
 end)
+Main:DropDown("Select Weapon", _G.Settings.Weapons, function(weapons)
+    _G.Settings.SelectedWeapon = weapons
+end)
 Main:Toggle("AutoFarm", function(isToggled)
     _G.Settings.AutoFarm = isToggled
 end)
+Main:Toggle("AutoEquip", function(isToggled)
+    _G.Settings.AutoEquip = isToggled
+end)
 
-ff:Label("Welcome to Bonno GUI")
-ff:Button("TextButton Text", function()
-    print("Clicked!")
-end)
-ff:Toggle("Toggle Me!", function(isToggled)
-    print(isToggled) -- prints true or false
-end)
-ff:KeyBind("Print('Hey') on bind", Enum.KeyCode.R, function() --Enum.KeyCode.R is starting Key
-    print('Hey')
-end)
-ff:TextBox("TextBox Info", "Epic PlaceHolder", function(getText)
-    print(getText) -- Prints whatever player types
-end)
-ff:Slider("WalkSpeed", 16, 503, function(currentValue)
-    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = currentValue 
-end)
-ff:DropDown("Favorite Food?", {"Pizza", "Burger", "Sandwiches"}, function(food) -- food is chosen item
-    print(food)
+spawn(function()
+    while wait() do
+        if _G.Settings.AutoEquip do
+            for _,v in pairs(LocalPlayer.Backpack:GetChildren()) do
+                if v.Name == _G.Settings.SelectedWeapon and v:IsA("Tool") then
+                    v.Parent = Character
+                end
+            end
+        end
+    end
 end)
